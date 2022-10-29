@@ -30,9 +30,9 @@ uint16_t InetAddress::toPort() const {
 }
 }  // namespace muduo
 
-#include<iostream>
-int main(){
-    muduo::InetAddress addr(12345);
-    std::cout<<addr.toIpPort()<<std::endl;
-    return 0;
-}
+// #include<iostream>
+// int main(){
+//     muduo::InetAddress addr(12345);
+//     std::cout<<addr.toIpPort()<<std::endl;
+//     return 0;
+// }
