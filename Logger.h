@@ -7,13 +7,14 @@
 namespace muduo
 {
     //LOG_INFO("%s %d",arg1,arg2),##__VA__ARGS__为获取可变参列表宏
+    // snprintf(buf, 1024, logmsgFormat, ##__VA__ARGS__);
 #define LOG_INFO(logmsgFormat, ...)                        \
     do                                                     \
     {                                                      \
         Logger &logger = Logger::instance();               \
         logger.setLogLevel(INFO);                          \
         char buf[1024] = {0};                              \
-        snprintf(buf, 1024, logmsgFormat, ##__VA__ARGS__); \
+        snprintf(buf, 1024, logmsgFormat); \
         logger.log(buf);                                   \
     } while (0)
 
@@ -23,7 +24,7 @@ namespace muduo
         Logger &logger = Logger::instance();               \
         logger.setLogLevel(ERROR);                         \
         char buf[1024] = {0};                              \
-        snprintf(buf, 1024, logmsgFormat, ##__VA__ARGS__); \
+        snprintf(buf, 1024, logmsgFormat); \
         logger.log(buf);                                   \
     } while (0)
 
@@ -33,7 +34,7 @@ namespace muduo
         Logger &logger = Logger::instance();               \
         logger.setLogLevel(FATAL);                         \
         char buf[1024] = {0};                              \
-        snprintf(buf, 1024, logmsgFormat, ##__VA__ARGS__); \
+        snprintf(buf, 1024, logmsgFormat); \
         logger.log(buf);                                   \
     } while (0)
 #ifdef MUDEBUG
@@ -43,7 +44,7 @@ namespace muduo
         Logger &logger = Logger::instance();               \
         logger.setLogLevel(DEBUG);                         \
         char buf[1024] = {0};                              \
-        snprintf(buf, 1024, logmsgFormat, ##__VA__ARGS__); \
+        snprintf(buf, 1024, logmsgFormat); \
         logger.log(buf);                                   \
     } while (0)
 #else
