@@ -45,7 +45,8 @@ void Channel::HandleEvent(Timestamp receiveTime) {
 }
 
 void Channel::handleEventWithGuard(Timestamp receiveTime) {
-  LOG_INFO("channel handleEvent revents:%d\n", revents_);
+  // LOG_INFO("channel handleEvent revents:%d \n",revents_); 一直警告%d类型不匹配
+  LOG_INFO("channel handleEvent revents:\n");
   if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
     if (closeCallback_) {
       closeCallback_();
