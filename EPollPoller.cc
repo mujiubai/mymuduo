@@ -29,8 +29,8 @@ EPollPoller::EPollPoller(EventLoop *loop)
 EPollPoller::~EPollPoller() { ::close(epollfd_); }
 
 Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels) {
-  LOG_INFO("func=%s => fd total count:%d \n", __FUNCTION__,
-           channels_->size());  //使用LOG_DEBUG更合理 code ..
+  //使用LOG_DEBUG更合理 code ..
+  LOG_INFO("func=%s => fd total count:%d \n", __FUNCTION__, static_cast<int>(channels_.size()));
   int numEvents = ::epoll_wait(epollfd_, &*events_.begin(),
                                static_cast<int>(events_.size()), timeoutMs);
   int saveError = errno;  //防止多线程时覆盖errno
