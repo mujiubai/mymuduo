@@ -1,18 +1,17 @@
 #include "Acceptor.h"
-#include "InetAddress.h"
 
 #include <errno.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "InetAddress.h"
 #include "Logger.h"
 
 using namespace muduo;
 
 static int createNonblocking() {
-  int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC,
-                        0);
+  int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, 0);
   if (sockfd < 0) {
     LOG_FATAL("%s:%s:%d listen socket create err:%d \n", __FILE__, __FUNCTION__,
               __LINE__, errno);
@@ -38,10 +37,11 @@ Acceptor::~Acceptor() {
   acceptChannel_.remove();
 }
 
+//调用此函数后，acceptor开始监听
 void Acceptor::listen() {
   listenning_ = true;
-  acceptSocket_
-      .listen();  //不懂这里为啥还要设置监听，不是要在下面channel中设置监听吗
+  //需要将其设置为监听模式
+  acceptSocket_.listen();
   acceptChannel_.enableReading();
 }
 
