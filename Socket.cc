@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include<netinet/tcp.h>
 
 #include "InetAddress.h"
 #include "Logger.h"
