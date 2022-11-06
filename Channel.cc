@@ -16,6 +16,13 @@ Channel::Channel(EventLoop *loop, int fd)
 
 Channel::~Channel() {}
 
+/**
+ * @brief tie方法什么时候调用？
+ *TcpConnectoion中有channel成员，channel的各种回调函数是TcpConnection的
+ *只有TcpConnection对象存在时，channel调用回调才不出错，因此使用一个weak指针观察其状态
+ *
+ * @param obj 是TcpConnection对象，
+ */
 void Channel::tie(const std::shared_ptr<void> &obj) {
   tie_ = obj;
   tied_ = true;
@@ -45,7 +52,8 @@ void Channel::HandleEvent(Timestamp receiveTime) {
 }
 
 void Channel::handleEventWithGuard(Timestamp receiveTime) {
-  // LOG_INFO("channel handleEvent revents:%d \n",revents_); 一直警告%d类型不匹配
+  // LOG_INFO("channel handleEvent revents:%d \n",revents_);
+  // 一直警告%d类型不匹配
   LOG_INFO("channel handleEvent revents:\n");
   if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN)) {
     if (closeCallback_) {

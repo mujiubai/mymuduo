@@ -67,8 +67,17 @@ class Buffer {
     }
   }
 
+  //把data中的len长的数据添加到缓冲区中
+  void append(const char* data, size_t len) {
+    ensureWriteableBytes(len);
+    std::copy(data, data + len, beginWrite());
+    writerIndex_ += len;
+  }
+
   //从fd上读取数据
   size_t readFd(int fd, int* saveErrno);
+  //通过fd发送数据
+  size_t writeFd(int fd, int* saveErrno);
 
  private:
   //返回buffer首元素地址，即数组的起始地址，&*不能抵消，因为*被重写过
@@ -87,13 +96,6 @@ class Buffer {
       std::copy(begin() + readerIndex_, begin() + writeableBytes(),
                 begin() + kCheapPrepend);
     }
-  }
-
-  //把data中的len长的数据添加到缓冲区中
-  void append(const char* data, size_t len) {
-    ensureWriteableBytes(len);
-    std::copy(data, data + len, beginWrite());
-    writerIndex_ += len;
   }
 
   //返回可写处的指针

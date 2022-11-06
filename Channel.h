@@ -85,8 +85,9 @@ class Channel : noncopyable {
   int events_;       // sockfd上监听的事件
   int index_;        // poller的顺序
 
-  std::weak_ptr<void>
-      tie_;  //绑定此类对象的弱引用，可用于判断对象是否存活和得到shared指针
+  //绑定TcpConnection对象的弱引用，可用于判断对象是否存活和得到shared指针
+  //用于观察注册回调的TcpConnection对象是否存活，避免调用回调函数时出错
+  std::weak_ptr<void> tie_;  
   bool tied_;
 
   //用于处理revents的四种回调函数
