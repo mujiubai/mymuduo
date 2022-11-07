@@ -96,6 +96,7 @@ void TcpConnection::handleWrite() {
   }
 }
 
+//poller => channel::closeCallback => TcpConnection::handleClose()
 //发生关闭事件后，调用的回调
 void TcpConnection::handleClose() {
   LOG_INFO("fd=%d state=%d \n", channel_->fd(), (int)state_);
@@ -103,10 +104,11 @@ void TcpConnection::handleClose() {
   channel_->disableAll();
 
   TcpConnectionPtr connPtr(shared_from_this());
-  //有点没搞明白为啥还要使用连接的回调，直接调用关闭回调不就好了
-  connectionCallback_(connPtr);  //执行连接关闭回调
+  //有点没搞明白为啥还要使用连接的回调，直接调用关闭回调不就好了?
+  //可能是连接断开也要调用用户自定以得回调
+  connectionCallback_(connPtr);  //执行连接关闭回调 
   //必须在最后一行
-  closeCallback_(connPtr);  //关闭连接回调
+  closeCallback_(connPtr);  //关闭连接回调 这执行的TcpServer::removeConnection()方法
 }
 
 //发生错误事件后，打印出错误信息
@@ -190,9 +192,9 @@ void TcpConnection::sendInLoop(const void *message, size_t len) {
   }
 }
 
-//连接建立回调  还不知道这个函数在哪调用
+//连接建立回调  这个函数在TcpServer::newConnection中调用
 void TcpConnection::connectEstablished() {
-  setState(kConnecting);
+  setState(kConnected);
   //将channel与此对象绑定，使得channel能观察此对象是否存活，避免调用回调时出错
   channel_->tie(shared_from_this());
   //向poller注册channel的epollin事件
@@ -202,7 +204,7 @@ void TcpConnection::connectEstablished() {
   connectionCallback_(shared_from_this());
 }
 
-//连接销毁回调 还不知道这个函数在哪调用
+//连接销毁回调 这个函数在哪TcpServer::removeConnectionInLoop中调用
 void TcpConnection::connectDestroyed() {
   if (state_ == kConnected) {
     setState(kDisconnected);
