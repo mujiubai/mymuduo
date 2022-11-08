@@ -25,6 +25,7 @@ Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr,
       acceptSocket_(createNonblocking()),
       acceptChannel_(loop, acceptSocket_.fd()),
       listenning_(false) {
+  // LOG_INFO("**************fd: %d \n", acceptSocket_.fd());
   acceptSocket_.setReuseAddr(true);
   acceptSocket_.setReusePort(reuseport);
   acceptSocket_.bindAddress(listenAddr);  // bind 绑定

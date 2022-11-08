@@ -2,6 +2,7 @@
 
 #include <sys/epoll.h>
 
+#include "EventLoop.h"
 #include "Logger.h"
 
 using namespace muduo;
@@ -32,19 +33,20 @@ void Channel::tie(const std::shared_ptr<void> &obj) {
 void Channel::update() {
   //通过channel所属的event loop，调用相应的注册事件方法
   // add code...
-  // loop->updateChannel(this);
+  loop_->updateChannel(this);
 }
 
 //在所属的eventloop移除此channel
 void Channel::remove() {
   // add code.
-  // loop_->removeChannel(this);
+  loop_->removeChannel(this);
 }
 
 void Channel::HandleEvent(Timestamp receiveTime) {
   if (tied_) {
     std::shared_ptr<void> guard = tie_.lock();
     if (guard) {
+      handleEventWithGuard(receiveTime);
     }
   } else {
     handleEventWithGuard(receiveTime);
@@ -61,11 +63,13 @@ void Channel::handleEventWithGuard(Timestamp receiveTime) {
     }
   }
   if (revents_ & EPOLLERR) {
+    LOG_INFO("channel use errorCallback************:\n");
     if (errorCallback_) {
       errorCallback_();
     }
   }
   if (revents_ & (EPOLLIN | EPOLLPRI)) {
+    LOG_INFO("channel use readCallback************:\n");
     if (readCallback_) {
       readCallback_(receiveTime);
     }
@@ -75,4 +79,5 @@ void Channel::handleEventWithGuard(Timestamp receiveTime) {
       writeCallback_();
     }
   }
+  // LOG_ERROR("channel event happend, but no use Callback!!! the revents = %d\n",revents_);
 }

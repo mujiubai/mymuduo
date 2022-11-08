@@ -6,10 +6,12 @@
 #include <unordered_map>
 
 #include "Acceptor.h"
+#include "Buffer.h"
 #include "Callbacks.h"
 #include "EventLoop.h"
 #include "EventLoopThreadPool.h"
 #include "InetAddress.h"
+#include "TcpConnection.h"
 #include "noncopyable.h"
 
 namespace muduo {
@@ -27,8 +29,8 @@ class TcpServer : noncopyable {
     kReusePort,
   };
 
-  TcpServer(EventLoop *loop, const InetAddress &listenAddr,const std::string nameArg,
-            Option option = kNoReusePort);
+  TcpServer(EventLoop *loop, const InetAddress &listenAddr,
+            const std::string nameArg, Option option = kNoReusePort);
   ~TcpServer();
 
   void setThreadInitCallback(const ThreadInitCallback &cb) {

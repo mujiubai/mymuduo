@@ -33,7 +33,7 @@ class Channel : noncopyable {
 
   int fd() const { return fd_; };
   int events() const { return events_; }
-  int setRevents(int revt) { events_ = revt; }  //供poller设置发生事件
+  int setRevents(int revt) { revents_ = revt; }  //供poller设置发生事件
 
   //设置或取消读 写事件:
   void enableReading() {
