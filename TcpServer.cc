@@ -59,7 +59,7 @@ void TcpServer::start() {
   }
 }
 
-//有一个新的客户端连接，acceptor会执行这个回调
+//当有新的客户端连接，acceptor会执行这个回调
 //根据轮询算法选择一个subLoop，唤醒subLoop，把当前connfd封装成channel分发给subloop
 void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr) {
   //根据轮询选择一个subloop来管理channel

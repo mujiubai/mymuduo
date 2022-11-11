@@ -31,10 +31,12 @@ class EventLoopThreadPool : noncopyable {
   const std::string name() const { return name_; }
 
  private:
-  EventLoop *baseLoop_;  // mainReactor
+  // mainReactor，设置这个成员是考虑轮询算法寻找subLoop时，当不存在subLoop时能将mainLoop作为作为返回结果
+  EventLoop *baseLoop_;
   std::string name_;
   bool started_;
   int numThreads_;
+  //轮询时下一个位置指向
   int next_;
   std::vector<std::unique_ptr<EventLoopThread>> threads_;
   std::vector<EventLoop *> loops_;

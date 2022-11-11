@@ -82,14 +82,13 @@ class Buffer {
  private:
   //返回buffer首元素地址，即数组的起始地址，&*不能抵消，因为*被重写过
   char* begin() { return &*buffer_.begin(); }
-
   const char* begin() const { return &*buffer_.begin(); }
 
   //通过整理buffer空间或增加buffer空间使得容量够写
   void makeSpace(size_t len) {
-    //如果可写空间加上前面预留空间（预留空间可能由于依次没读完而边长）还是小于要求的长度
+    //如果可写空间加上前面预留空间（预留空间可能由于依次被读完而变长）还是小于要求的长度
     if (writeableBytes() + prependableBytes() < len + kCheapPrepend) {
-      buffer_.resize(len + len);
+      buffer_.resize(writerIndex_ + len);
     } else {
       //如果数据空间够用，则将现有数据前移
       size_t readable = readableBytes();
@@ -102,8 +101,8 @@ class Buffer {
   char* beginWrite() { return begin() + writerIndex_; }
   const char* beginWrite() const { return begin() + writerIndex_; }
 
-  std::vector<char> buffer_;
-  size_t readerIndex_;
-  size_t writerIndex_;
+  std::vector<char> buffer_;  //缓冲区
+  size_t readerIndex_;        //可读位置
+  size_t writerIndex_;        //可写位置
 };
 }  // namespace muduo

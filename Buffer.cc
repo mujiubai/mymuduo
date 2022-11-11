@@ -55,5 +55,6 @@ size_t Buffer::writeFd(int fd, int* saveErrno) {
   if (n <0) {
     *saveErrno = errno;
   }
+  //这里不移动readIndex_,是因为外部调用时进行移动
   return n;
 }

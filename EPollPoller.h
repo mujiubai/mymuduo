@@ -15,6 +15,7 @@ class EPollPoller : public Poller {
  public:
   EPollPoller(EventLoop *loop);
   ~EPollPoller() override;
+  
   //重写Poller的抽象方法
   Timestamp poll(int timeoutMs, ChannelList *activeChannels) override;
   void updateChannel(Channel *channel) override;
@@ -23,13 +24,13 @@ class EPollPoller : public Poller {
  private:
   static const int kInitEventListSize = 16;  //给events的初始长度
 
-  //填写活跃的链接
+  //将poll返回的发生事件的channel写入到activeChannels中
   void fillActiveChannels(int numEvents, ChannelList *activeChannels) const;
-  //更新channel通道
+  //更新channel通道设置的事件
   void update(int operation, Channel *channel);
 
   using EventList = std::vector<epoll_event>;
-  int epollfd_;
-  EventList events_;
+  int epollfd_;//epoll的fd
+  EventList events_;//记录epoll返回的发生事件
 };
 }  // namespace muduo

@@ -24,15 +24,17 @@ class Acceptor : noncopyable {
   }
 
   bool listenning() const { return listenning_; }
+  //开始监听
   void listen();
 
  private:
+  // listenfd有事件发生即有新用户连接，调用此函数
   void handleRead();
 
   EventLoop *loop_;  // acceptor使用的用户定义的loop，也叫mainloop
-  Socket acceptSocket_;
-  Channel acceptChannel_;
-  NewConnectionCallback newConnectionCallback_;  //当有新连接到来，需要做的事
-  bool listenning_;
+  Socket acceptSocket_;                          // listenfd对应的socket
+  Channel acceptChannel_;                        // listenfd对应的channel
+  NewConnectionCallback newConnectionCallback_;  //当有新连接到来，需要做的回调
+  bool listenning_;                              //是否监听标志
 };
 }  // namespace muduo

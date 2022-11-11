@@ -51,7 +51,9 @@ class TcpServer : noncopyable {
   void start();
 
  private:
+  //当Acceptor有新连接时会调用的回调函数
   void newConnection(int sockfd, const InetAddress &peerAddr);
+  
   void removeConnection(const TcpConnectionPtr &conn);
   void removeConnectionInLoop(const TcpConnectionPtr &conn);
 
@@ -70,7 +72,7 @@ class TcpServer : noncopyable {
   ThreadInitCallback threadInitCallback_;  //线程初始化的回调
   std::atomic_int started_;
 
-  int nextConnId_;
+  int nextConnId_;  // TcpConnection的id，是用来加到TcpConnection名字中
   ConnectionMap connections_;  //保存所有的连接
 };
 }  // namespace muduo

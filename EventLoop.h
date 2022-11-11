@@ -21,6 +21,7 @@ class Poller;
  */
 class EventLoop {
  public:
+  //即使要传参数，也可以通过bind绑定
   using Functor = std::function<void()>;
 
   EventLoop();
@@ -51,20 +52,21 @@ class EventLoop {
 
  private:
   void handleRead();         // wakeupfd_的读回调函数
-  void doPendingFunctors();  //执行回调
+  void doPendingFunctors();  //执行需要执行的回调操作
 
   using ChannelList = std::vector<Channel *>;
 
   std::atomic_bool looping_;  //原子操作，通过CAS实现
   std::atomic_bool quit_;     //标志是否退出loop循环
   const pid_t threadId_;      //当前loop所在线程id
-  Timestamp pollReturnTime_;  // poller返回发生事件的channel的时间点
+  Timestamp pollReturnTime_;  // poller返回发生事件的时间点
   std::unique_ptr<Poller> poller_;
 
+  //唤醒当前loop所在线程的fd
   int wakeupFd_;  //当mainLoop获取新用户channel时，通过轮询算法选择一个subloop，通过该成员唤醒subLoop处理channel
   std::unique_ptr<Channel> wakeupChanel_;  // wakeupfd_的channel的指针
 
-  ChannelList activeChannels_;  //记录活跃channel
+  ChannelList activeChannels_;  //记录发生事件的所有channel
   Channel *currentActiveChannel_;
 
   std::atomic_bool callingPendingFuctors_;  //当前loop是否有需要执行的回调操作

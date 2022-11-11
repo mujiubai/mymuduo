@@ -24,7 +24,7 @@ void EventLoopThreadPool::start(const ThreadInitCallback &cb) {
     snprintf(buf, sizeof buf, "%s%d", name_.c_str(), i);
     EventLoopThread *t = new EventLoopThread(cb, buf);
     threads_.push_back(std::unique_ptr<EventLoopThread>(t));
-    //底层创建线程，绑定一个新的Eventloop，并但会该loop地址
+    //底层创建线程，绑定一个新的Eventloop，并记录该loop地址
     loops_.push_back(t->startLoop());
   }
 

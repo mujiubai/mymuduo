@@ -75,11 +75,11 @@ class TcpConnection : noncopyable,
 
   EventLoop *loop_;  // subLoop地址
   const std::string name_;
-  std::atomic_int state_;
+  std::atomic_int state_;//TcpConnection状态
   bool reading_;  //可读标志
 
-  std::unique_ptr<Socket> socket_;
-  std::unique_ptr<Channel> channel_;
+  std::unique_ptr<Socket> socket_;//one Tcpconnection one socket
+  std::unique_ptr<Channel> channel_;//one Tcpconnection one channel
 
   const InetAddress localAddr_;  //本地地址
   const InetAddress peerAddr_;   //对端地址

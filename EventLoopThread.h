@@ -18,6 +18,7 @@ class EventLoopThread : noncopyable {
                   const std::string &name = std::string());
   ~EventLoopThread();
 
+  //创建线程，启动loop
   EventLoop *startLoop();
 
  private:
@@ -25,11 +26,11 @@ class EventLoopThread : noncopyable {
   void threadFunc();
 
   EventLoop *loop_;
-  bool exiting_;      //线程是否正在退出
-  Thread thread_;     //线程
-  std::mutex mutex_;  //互斥访问loop_
-  std::condition_variable cond_;  //条件变量，用于进行是否已经成功创建通信
-  ThreadInitCallback callback_;  //初始回调函数
+  bool exiting_;                  //线程是否正在退出
+  Thread thread_;                 //线程
+  std::mutex mutex_;              //互斥访问loop_
+  std::condition_variable cond_;  //条件变量，用于是否已经成功创建通信
+  ThreadInitCallback callback_;  //上层设置的回调函数
 };
 
 }  // namespace muduo

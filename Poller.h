@@ -16,7 +16,7 @@ class Poller : noncopyable {
   Poller(EventLoop *loop);
   virtual ~Poller()=default;
 
-  //统一IO复用接口
+  //统一IO复用接口，扩展类如select、poll和Epoll都必须实现这几个接口
   virtual Timestamp poll(int timeousMs, ChannelList *activeChannels) = 0;
   virtual void updateChannel(Channel *channel) = 0;
   virtual void removeChannel(Channel *channel) = 0;
@@ -31,9 +31,9 @@ class Poller : noncopyable {
  protected:
   // key:sockfd value:sockfd所属的channel通道类型
   using ChannelMap = std::unordered_map<int, Channel *>;
-  ChannelMap channels_;
+  ChannelMap channels_;//记录管理的Channel
 
  private:
-  EventLoop *ownerLoop_;
+  EventLoop *ownerLoop_;//记录poller绑定的EventLoop
 };
 }  // namespace muduo

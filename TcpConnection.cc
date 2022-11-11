@@ -67,6 +67,7 @@ void TcpConnection::handleRead(Timestamp receiveTime) {
 }
 
 //啥时候执行写回调？poller怎么通知写回调，数据不是都先到buffer中的吗
+//这是因为只要注册了EPOLLOUT事件，当内核写缓冲可写时，会不断发送EPOLLOUT信号，然后调用此函数将buffer中的数据进行发送
 void TcpConnection::handleWrite() {
   if (channel_->isWriting()) {
     int savedError = 0;
@@ -105,7 +106,7 @@ void TcpConnection::handleClose() {
 
   TcpConnectionPtr connPtr(shared_from_this());
   //有点没搞明白为啥还要使用连接的回调，直接调用关闭回调不就好了?
-  //可能是连接断开也要调用用户自定以得回调
+  //可能是连接断开也要调用用户自定以得回调，用户可能设置了断开时做的操作
   connectionCallback_(connPtr);  //执行连接关闭回调 
   //必须在最后一行
   closeCallback_(connPtr);  //关闭连接回调 这执行的TcpServer::removeConnection()方法
@@ -151,7 +152,7 @@ void TcpConnection::sendInLoop(const void *message, size_t len) {
     return;
   }
 
-  // channel第一次开始写数据且缓冲区没有待发送数据
+  // channel未设置写感兴趣事件（说明无数据待从缓冲区中写入）且缓冲区没有待发送数据
   if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
     nwrote = ::write(channel_->fd(), message, len);
     if (nwrote >= 0) {
@@ -187,7 +188,7 @@ void TcpConnection::sendInLoop(const void *message, size_t len) {
     outputBuffer_.append((char *)message + nwrote, remaining);
     if (!channel_->isWriting()) {
       //这里一定要注册channel的写事件，否则poller不会给channel通知epollout
-      channel_->enableReading();
+      channel_->enableWriting();
     }
   }
 }
@@ -204,7 +205,7 @@ void TcpConnection::connectEstablished() {
   connectionCallback_(shared_from_this());
 }
 
-//连接销毁回调 这个函数在哪TcpServer::removeConnectionInLoop中调用
+//连接销毁回调 这个函数在TcpServer::removeConnectionInLoop中调用
 void TcpConnection::connectDestroyed() {
   if (state_ == kConnected) {
     setState(kDisconnected);

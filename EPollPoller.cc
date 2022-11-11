@@ -10,7 +10,7 @@
 using namespace muduo;
 
 // channel未添加到poller中
-const int kNew = -1;  // channel 成员index_=-1,
+const int kNew = -1;  // channel 成员初始时index_=-1,
 // channel已添加到poller中
 const int kAdded = 1;
 // channel已从poller中删除
@@ -28,8 +28,9 @@ EPollPoller::EPollPoller(EventLoop *loop)
 
 EPollPoller::~EPollPoller() { ::close(epollfd_); }
 
+//对应epoll_wait操作
 Timestamp EPollPoller::poll(int timeoutMs, ChannelList *activeChannels) {
-  //使用LOG_DEBUG更合理 code ..
+  //使用LOG_DEBUG更合理
   LOG_INFO("func=%s => fd total count:%d \n", __FUNCTION__, static_cast<int>(channels_.size()));
   int numEvents = ::epoll_wait(epollfd_, &*events_.begin(),
                                static_cast<int>(events_.size()), timeoutMs);
