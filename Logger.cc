@@ -17,7 +17,7 @@ namespace muduo
         {
         case INFO:
         {
-            std::cout << "[INFO}";
+            std::cout << "[INFO]";
             break;
         }
         case ERROR:
