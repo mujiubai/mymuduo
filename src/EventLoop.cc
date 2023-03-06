@@ -139,7 +139,7 @@ void EventLoop::updateChannel(Channel *channel) {
 void EventLoop::removeChannel(Channel *channel) {
   poller_->removeChannel(channel);
 }
-bool EventLoop::hasChannel(Channel *channel) { poller_->hasChannel(channel); }
+bool EventLoop::hasChannel(Channel *channel) { return poller_->hasChannel(channel); }
 
 //执行回调
 void EventLoop::doPendingFunctors() {
